@@ -3,4 +3,5 @@ go 1.21.3
 use (
 	./broker-service
 	./front-end
+	./authentication-service
 )
