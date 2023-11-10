@@ -20,7 +20,7 @@ type AuthPayload struct {
 func (app *Config) Broker(w http.ResponseWriter, r *http.Request) {
 	payload := jsonResponse{
 		Error:   false,
-		Message: "Hello from the Broker!",
+		Message: "Hit the broker",
 	}
 
 	_ = app.writeJSON(w, http.StatusOK, payload)
@@ -36,7 +36,7 @@ func (app *Config) HandleSubmission(w http.ResponseWriter, r *http.Request) {
 	}
 
 	switch requestPayload.Action {
-	case "Auth":
+	case "auth":
 		app.authenticate(w, requestPayload.Auth)
 	default:
 		app.errorJSON(w, errors.New("unknown action"))
@@ -46,7 +46,7 @@ func (app *Config) HandleSubmission(w http.ResponseWriter, r *http.Request) {
 func (app *Config) authenticate(w http.ResponseWriter, a AuthPayload) {
 	jsonData, _ := json.MarshalIndent(a, "", "\t")
 
-	request, err := http.NewRequest("POST", "http://localhost:4000/v1/auth", bytes.NewBuffer(jsonData))
+	request, err := http.NewRequest("POST", "http://authentication-service/authenticate", bytes.NewBuffer(jsonData))
 	if err != nil {
 		app.errorJSON(w, err)
 		return
@@ -58,10 +58,9 @@ func (app *Config) authenticate(w http.ResponseWriter, a AuthPayload) {
 		app.errorJSON(w, err)
 		return
 	}
-
 	defer response.Body.Close()
 
-	if response.StatusCode != http.StatusUnauthorized {
+	if response.StatusCode == http.StatusUnauthorized {
 		app.errorJSON(w, errors.New("invalid credentials"))
 		return
 	} else if response.StatusCode != http.StatusAccepted {

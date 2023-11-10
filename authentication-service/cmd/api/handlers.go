@@ -23,7 +23,7 @@ func (app *Config) Authenticate(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	valid, err := user.PasswordMathes(requestPayload.Password)
+	valid, err := user.PasswordMatches(requestPayload.Password)
 	if err != nil || !valid {
 		app.errorJSON(w, err)
 		return
