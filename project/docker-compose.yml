@@ -1,5 +1,4 @@
 version: '3'
-
 services:
   broker-service:
     build:
@@ -23,7 +22,7 @@ services:
 
   authentication-service:
     build:
-      context: ./../authentication-service
+      context: ./../authentication-service/
       dockerfile: ./../authentication-service/authentication-service.dockerfile
     restart: always
     ports:
@@ -50,9 +49,12 @@ services:
       - ./db-data/postgres/:/var/lib/postgresql/data/
 
   mongo:
-    image: 'mongo:4.2.16-bionic'
+    image: 'mongo:4.2.17-bionic'
     ports:
-      - '27017:27017'
+      - '27018:27017'
+    deploy:
+      mode: replicated
+      replicas: 1
     environment:
       MONGO_INITDB_DATABASE: logs
       MONGO_INITDB_ROOT_USERNAME: admin

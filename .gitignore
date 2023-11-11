@@ -2,3 +2,4 @@
 project/db-data/postgres/*
 front-end/frontApp
 authentication-service/authApp
+project/db-data/*
