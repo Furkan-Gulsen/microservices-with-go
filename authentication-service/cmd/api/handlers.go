@@ -1,6 +1,7 @@
 package main
 
 import (
+	"authentication/data"
 	"bytes"
 	"encoding/json"
 	"errors"
@@ -45,6 +46,40 @@ func (app *Config) Authenticate(w http.ResponseWriter, r *http.Request) {
 	}
 
 	app.writeJSON(w, http.StatusAccepted, payload)
+}
+
+func (app *Config) CreateUserHandler(w http.ResponseWriter, r *http.Request) {
+	var user struct {
+		Email     string `json:"email"`
+		FirstName string `json:"first_name,omitempty"`
+		LastName  string `json:"last_name,omitempty"`
+		Password  string `json:"password"`
+		Active    int    `json:"active"`
+	}
+
+	err := app.readJSON(w, r, &user)
+	if err != nil {
+		app.errorJSON(w, err, http.StatusBadRequest)
+		return
+	}
+
+	newID, err := app.Models.User.Insert(data.User{
+		Email:     user.Email,
+		FirstName: user.FirstName,
+		LastName:  user.LastName,
+		Password:  user.Password,
+		Active:    user.Active,
+	})
+	if err != nil {
+		app.errorJSON(w, err, http.StatusInternalServerError)
+		return
+	}
+
+	payload := jsonResponse{
+		Error:   false,
+		Message: fmt.Sprintf("New user created with ID %d", newID),
+	}
+	app.writeJSON(w, http.StatusCreated, payload)
 }
 
 func (app *Config) logRequest(name, data string) error {

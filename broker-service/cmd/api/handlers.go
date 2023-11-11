@@ -101,6 +101,7 @@ func (app *Config) logItem(w http.ResponseWriter, entry LogPayload) {
 func (app *Config) authenticate(w http.ResponseWriter, a AuthPayload) {
 	jsonData, _ := json.MarshalIndent(a, "", "\t")
 
+	log.Println("jsonData: ", a)
 	request, err := http.NewRequest("POST", "http://authentication-service/authenticate", bytes.NewBuffer(jsonData))
 	if err != nil {
 		app.errorJSON(w, err)
@@ -115,7 +116,7 @@ func (app *Config) authenticate(w http.ResponseWriter, a AuthPayload) {
 	}
 	defer response.Body.Close()
 
-	log.Print("response.StatusCode: ", response.Body)
+	log.Print("response.StatusCode: ", response.StatusCode)
 
 	if response.StatusCode == http.StatusUnauthorized {
 		app.errorJSON(w, errors.New("invalid credentials"))
