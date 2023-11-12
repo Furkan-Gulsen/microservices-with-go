@@ -22,7 +22,7 @@ services:
       BROKER_URL: 'http://backend'
 
   broker-service:
-    image: codeblogger/broker-service:1.0.0
+    image: codeblogger/broker-service:1.0.2
     # ports:
     #   - '8080:80'
     deploy:
@@ -36,7 +36,7 @@ services:
       replicas: 1
 
   authentication-service:
-    image: codeblogger/authentication-service:1.0.0
+    image: codeblogger/authentication-service:1.0.1
     deploy:
       mode: replicated
       replicas: 1
@@ -50,7 +50,7 @@ services:
       replicas: 1
 
   mailer-service:
-    image: codeblogger/mail-service:1.0.0
+    image: codeblogger/mail-service:1.0.1
     deploy:
       mode: replicated
       replicas: 1
