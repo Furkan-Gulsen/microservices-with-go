@@ -10,7 +10,7 @@ import (
 type jsonResponse struct {
 	Error   bool        `json:"error"`
 	Message string      `json:"message"`
-	Data    interface{} `json:"data"`
+	Data    interface{} `json:"data,omitempty"`
 }
 
 func (app *Config) readJSON(w http.ResponseWriter, r *http.Request, data interface{}) error {
@@ -45,7 +45,6 @@ func (app *Config) writeJSON(w http.ResponseWriter, status int, data any, header
 	}
 
 	w.Header().Set("Content-Type", "application/json")
-	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.WriteHeader(status)
 	_, err = w.Write(out)
 	if err != nil {
