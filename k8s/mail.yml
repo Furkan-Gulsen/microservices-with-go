@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mailer-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mailer-service
+  template:
+    metadata:
+      labels:
+        app: mailer-service
+    spec:
+      containers:
+        - name: mailer-service
+          image: 'codeblogger/mail-service:1.0.1'
+          resources:
+            requests:
+              memory: '64Mi'
+              cpu: '250m'
+            limits:
+              memory: '128Mi'
+              cpu: '500m'
+          env:
+            - name: MAIL_DOMAIN
+              value: ''
+            - name: MAIL_HOST
+              value: 'localhost'
+            - name: MAIL_PORT
+              value: '1025'
+            - name: MAIL_ENCRYPTION
+              value: 'none'
+            - name: MAIL_USERNAME
+              value: ''
+            - name: MAIL_PASSWORD
+              value: ''
+            - name: FROM_NAME
+              value: 'John Smith'
+            - name: FROM_ADDRESS
+              value: 'admin@example.com'
+          ports:
+            - containerPort: 80
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mailer-service
+spec:
+  selector:
+    app: mailer-service
+  ports:
+    - protocol: TCP
+      name: main-port
+      port: 80
+      targetPort: 80
